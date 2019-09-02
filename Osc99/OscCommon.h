@@ -38,6 +38,14 @@
  */
 #define OSC_ERROR_MESSAGES_ENABLED
 
+
+#ifdef _MSC_VER
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+#elif defined(__GNUC__)
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+
 //------------------------------------------------------------------------------
 // Definitions - 32-bit argument types
 
@@ -45,38 +53,42 @@
  * @brief 32-bit RGBA colour.
  * See http://en.wikipedia.org/wiki/RGBA_color_space
  */
-typedef struct __attribute__((__packed__)) {
 #ifdef LITTLE_ENDIAN_PLATFORM
-    char alpha; // LSB
-    char blue;
-    char green;
-    char red; // MSB
+typedef PACK(struct {
+	char alpha; // LSB
+	char blue;
+	char green;
+	char red; // MSB
+}) RgbaColour;
 #else
+typedef PACK(struct {
     char red; // MSB
     char green;
     char blue;
     char alpha; // LSB
+})  RgbaColour;
 #endif
-}
-RgbaColour;
+
+
 
 /**
  * @brief 4 byte MIDI message as described in OSC 1.0 specification.
  */
-typedef struct __attribute__((__packed__)) {
 #ifdef LITTLE_ENDIAN_PLATFORM
-    char data2; // LSB
-    char data1;
-    char status;
-    char portID; // MSB
+typedef  PACK(struct {
+	char data2; // LSB
+	char data1;
+	char status;
+	char portID; // MSB
+}) MidiMessage;
 #else
+typedef  PACK(struct {
     char portID; // MSB
     char status;
     char data1;
     char data2; // LSB
+}) MidiMessage;
 #endif
-}
-MidiMessage;
 
 /**
  * @brief Union of all 32-bit OSC argument types defined in OSC 1.0
@@ -88,20 +100,24 @@ typedef union {
     RgbaColour rgbaColour;
     MidiMessage midiMessage;
 
-    struct __attribute__((__packed__)) {
 #ifdef LITTLE_ENDIAN_PLATFORM
-        char byte0; // LSB
-        char byte1;
-        char byte2;
-        char byte3; // MSB
+	PACK(struct {
+		char byte0; // LSB
+		char byte1;
+		char byte2;
+		char byte3; // MSB
+	})
+	byteStruct;
 #else
+	PACK(struct {
         char byte3; // MSB
         char byte2;
         char byte1;
         char byte0; // LSB
+	})
+	byteStruct;
 #endif
-    }
-    byteStruct;
+    
 } OscArgument32;
 
 //------------------------------------------------------------------------------
@@ -113,14 +129,14 @@ typedef union {
 typedef union {
     uint64_t value;
 
-    struct __attribute__((__packed__)) {
+	PACK( struct {
         uint32_t fraction;
         uint32_t seconds;
-    }
+    })
     dwordStruct;
 
-    struct __attribute__((__packed__)) {
 #ifdef LITTLE_ENDIAN_PLATFORM
+	PACK(struct {
         char byte0; // LSB
         char byte1;
         char byte2;
@@ -129,7 +145,10 @@ typedef union {
         char byte5;
         char byte6;
         char byte7; // MSB
+	})
+		byteStruct;
 #else
+	PACK(struct {
         char byte7; // MSB
         char byte6;
         char byte5;
@@ -138,9 +157,10 @@ typedef union {
         char byte2;
         char byte1;
         char byte0; // LSB
+	})
+		byteStruct;
 #endif
-    }
-    byteStruct;
+   
 } OscTimeTag;
 
 /**
@@ -162,9 +182,9 @@ typedef union {
     OscTimeTag oscTimeTag;
     Double64 double64;
 
-    struct __attribute__((__packed__)) {
 #ifdef LITTLE_ENDIAN_PLATFORM
-        char byte0; // LSB
+	PACK(struct {
+		char byte0; // LSB
         char byte1;
         char byte2;
         char byte3;
@@ -172,7 +192,10 @@ typedef union {
         char byte5;
         char byte6;
         char byte7; // MSB
+	})
+		byteStruct;
 #else
+	PACK(struct {
         char byte7; // MSB
         char byte6;
         char byte5;
@@ -181,9 +204,9 @@ typedef union {
         char byte2;
         char byte1;
         char byte0; // LSB
+	})
+		byteStruct;
 #endif
-    }
-    byteStruct;
 } OscArgument64;
 
 //------------------------------------------------------------------------------

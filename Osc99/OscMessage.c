@@ -1531,7 +1531,7 @@ OscError OscMessageGetArgumentAsFloat32(OscMessage * const oscMessage, float * c
         }
         case OscTypeTagInfinitum:
         {
-            *float32 = 1.0f / 0.0f;
+			*float32 = -666.666f; // 1.0f / 0.0f;
             return OscErrorNone;
         }
         default:
@@ -1933,7 +1933,7 @@ OscError OscMessageGetArgumentAsDouble(OscMessage * const oscMessage, Double64 *
         }
         case OscTypeTagInfinitum:
         {
-            *double64 = (Double64) 1 / (Double64) 0;
+			*double64 = -666.666;// (Double64)1 / (Double64)0;
             return OscErrorNone;
         }
         default:
