@@ -29,7 +29,8 @@
  * @brief Maximum packet size permitted by the transport layer.  Reducing this
  * value will reduce the amount of memory required.
  */
-#define MAX_TRANSPORT_SIZE (1472)
+//#define MAX_TRANSPORT_SIZE (1472)
+#define MAX_TRANSPORT_SIZE (1<<15)
 
 /**
  * @brief Comment out this definition to prevent the OscErrorGetMessage function
